@@ -1,0 +1,14 @@
+
+services:
+  netpulse-server:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: 8080
+      PUBLIC_BASE_URL: http://localhost:8080
+      NODE_ID: tokyo-01
+      NODE_NAME: Tokyo 01
+      REGION: JP
+      WEIGHT: 1
+    restart: unless-stopped
