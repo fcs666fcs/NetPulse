@@ -65,8 +65,8 @@ fun ResultScreen(
         }
 
         SpeedHero(
-            speed = result.downloadMbps,
-            label = "Download",
+            speedMbps = result.downloadMbps,
+            phaseLabel = "Download",
         )
 
         Row(
@@ -76,13 +76,13 @@ fun ResultScreen(
             MetricCard(
                 title = "UPLOAD",
                 value = formatSpeed(result.uploadMbps),
-                unit = "Mbps",
+                subtitle = "Mbps",
             )
 
             MetricCard(
                 title = "PING",
                 value = formatMs(result.pingMs),
-                unit = "ms",
+                subtitle = "ms",
             )
 
             MetricCard(
@@ -139,6 +139,11 @@ fun ResultScreen(
                 )
 
                 Detail(
+                    "Packet loss",
+                    formatPct(result.packetLossPct),
+                )
+
+                Detail(
                     "Duration",
                     "${result.durationMs / 1000.0} s",
                 )
@@ -151,6 +156,11 @@ fun ResultScreen(
                 Detail(
                     "Network",
                     result.networkType ?: "—",
+                )
+
+                Detail(
+                    "IP version",
+                    result.ipVersion ?: "—",
                 )
 
                 Detail(
@@ -183,14 +193,26 @@ fun ResultScreen(
             OutlinedButton(
                 onClick = {
                     val shareText =
-                        "NetPulse\n" +
-                            "Download ${formatSpeed(result.downloadMbps)} Mbps · " +
-                            "Upload ${formatSpeed(result.uploadMbps)} Mbps · " +
-                            "Ping ${formatMs(result.pingMs)} ms · " +
-                            "Jitter ${formatMs(result.jitterMs)} ms · " +
-                            "Loss ${formatPct(result.packetLossPct)}"
+                        buildString {
+                            appendLine("NetPulse")
+                            appendLine(
+                                "Download: ${formatSpeed(result.downloadMbps)} Mbps",
+                            )
+                            appendLine(
+                                "Upload: ${formatSpeed(result.uploadMbps)} Mbps",
+                            )
+                            appendLine(
+                                "Ping: ${formatMs(result.pingMs)} ms",
+                            )
+                            appendLine(
+                                "Jitter: ${formatMs(result.jitterMs)} ms",
+                            )
+                            appendLine(
+                                "Loss: ${formatPct(result.packetLossPct)}",
+                            )
+                        }
 
-                    val intent = Intent(
+                    val sendIntent = Intent(
                         Intent.ACTION_SEND,
                     ).apply {
                         type = "text/plain"
@@ -202,8 +224,8 @@ fun ResultScreen(
 
                     context.startActivity(
                         Intent.createChooser(
-                            intent,
-                            "Share result",
+                            sendIntent,
+                            "分享测试结果",
                         ),
                     )
                 },
@@ -240,6 +262,8 @@ private fun Detail(
             color = MaterialTheme.colorScheme.secondary,
         )
 
-        Text(value)
+        Text(
+            text = value,
+        )
     }
 }
