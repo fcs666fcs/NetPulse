@@ -1,7 +1,5 @@
 name: Android Check
 
-# No automatic push/commit trigger.
-# Run this workflow manually from GitHub Actions when you want to verify the project.
 on:
   workflow_dispatch:
 
@@ -15,7 +13,7 @@ concurrency:
 jobs:
   check:
     name: Lint and Unit Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
 
     steps:
@@ -32,15 +30,18 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
         with:
-          packages: 'platform-tools'
+          packages: ''
           accept-android-sdk-licenses: true
           log-accepted-android-sdk-licenses: false
 
-      - name: Install required Android SDK packages
+      - name: Show Android SDK
         run: |
-          sdkmanager "platforms;android-37" "build-tools;36.0.0"
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+          ls -la "$ANDROID_SDK_ROOT/platforms" || true
+          ls -la "$ANDROID_SDK_ROOT/build-tools" || true
 
-      - name: Set up Gradle 9.6.0
+      - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
         with:
           gradle-version: '9.6.0'
@@ -63,7 +64,7 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
-      - name: Upload unit test report
+      - name: Upload test report
         if: always()
         uses: actions/upload-artifact@v7
         with:
