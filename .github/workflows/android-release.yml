@@ -1,12 +1,10 @@
 name: Android Release APK
 
-# Release builds are intentionally manual.
-# This workflow currently produces an unsigned release APK.
 on:
   workflow_dispatch:
     inputs:
       clean_build:
-        description: 'Clean before building'
+        description: Clean before building
         required: false
         default: true
         type: boolean
@@ -21,7 +19,7 @@ concurrency:
 jobs:
   release:
     name: Build Release APK
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
 
     steps:
@@ -38,30 +36,33 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
         with:
-          packages: 'platform-tools'
+          packages: ''
           accept-android-sdk-licenses: true
           log-accepted-android-sdk-licenses: false
 
-      - name: Install required Android SDK packages
+      - name: Show Android SDK
         run: |
-          sdkmanager "platforms;android-37" "build-tools;36.0.0"
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+          ls -la "$ANDROID_SDK_ROOT/platforms" || true
+          ls -la "$ANDROID_SDK_ROOT/build-tools" || true
 
-      - name: Set up Gradle 9.6.0
+      - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
         with:
           gradle-version: '9.6.0'
           cache-provider: basic
 
-      - name: Clean build
+      - name: Clean
         if: inputs.clean_build
         run: |
           gradle clean --no-daemon --stacktrace
 
-      - name: Build unsigned release APK
+      - name: Build Release APK
         run: |
           gradle :app:assembleRelease --no-daemon --stacktrace
 
-      - name: Upload release APK
+      - name: Upload Release APK
         uses: actions/upload-artifact@v7
         with:
           name: netpulse-release-unsigned-apk
