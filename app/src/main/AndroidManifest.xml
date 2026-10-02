@@ -1,39 +1,27 @@
-package com.example.netpulse.ui.components
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.font.FontWeight
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AppTopBar(
-    title: String,
-    onSettings: (() -> Unit)? = null,
-) {
-    TopAppBar(
-        title = {
-            Text(
-                text = title,
-                fontWeight = FontWeight.SemiBold,
-            )
-        },
-        actions = {
-            onSettings?.let { action ->
-                IconButton(
-                    onClick = action,
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Settings,
-                        contentDescription = "Settings",
-                    )
-                }
-            }
-        },
-    )
-}
+    <application
+        android:name=".NetPulseApplication"
+        android:allowBackup="true"
+        android:label="NetPulse"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.NetPulse">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+
+    </application>
+
+</manifest>
