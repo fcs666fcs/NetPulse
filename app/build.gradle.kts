@@ -1,7 +1,6 @@
 
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.devtools.ksp")
 }
@@ -41,8 +40,12 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
+    // With AGP 9+ built-in Kotlin, Kotlin is configured through the
+    // kotlin.compilerOptions DSL instead of android.kotlinOptions.
+    kotlin {
+        compilerOptions {
+            jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
+        }
     }
 
     buildFeatures {
